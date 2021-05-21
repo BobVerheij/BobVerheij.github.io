@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="en"><head>
+    <script src="p5.js"></script>
+    <script src="p5.sound.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, 
+     user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+  </head>
+  <body>
+    <script>
+      document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      });
+    </script>
+    <script src="sketch.js"></script>
+    <script src="room.js"></script>
+    <script src="player.js"></script>
+    
+    <button id="resetButton"> RESET </button>
+
+    <div id="hud">
+      <button id="upButton">UP</button>
+      <div>
+        <button id="leftButton">LEFT</button>
+        <button id="downButton">DOWN</button>
+        <button id="rightButton">RIGHT</button>
+      </div>
+    </div>
+  
+
+</body></html>

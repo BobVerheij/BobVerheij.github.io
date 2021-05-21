@@ -1,0 +1,55 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+}
+
+#hud{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  padding: 5vh 5vw;
+}
+#hud > div {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  margin: 20px auto;
+}
+
+#hud > div button:first-child{
+}
+
+#resetButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 10vh 5vw;
+}
+
+button{
+  font-family: sans-serif;
+  margin: 0px auto;
+  position: relative;
+  border: 0;
+  outline: 0;
+  z-index: 100;
+  width: 20vw;
+  min-height: 32px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+button:hover{
+  background-color: rgba(255, 255, 255, 0.2);
+}
+button:active{
+  background-color: rgba(255, 255, 255, 0.1);
+}
