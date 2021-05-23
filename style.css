@@ -17,16 +17,17 @@ canvas {
   flex-direction: column;
   align-content: center;
   padding: 5vh 5vw;
+	/* border: 1px solid black; */
 }
 #hud > div {
   display: flex;
   justify-content: space-between;
   width: 80%;
-  margin: 20px auto;
+  margin: 5px auto;
 }
 
-#hud > div button:first-child{
-}
+/* #hud > div button:first-child{
+} */
 
 #resetButton {
   position: absolute;
@@ -35,21 +36,44 @@ canvas {
   margin: 10vh 5vw;
 }
 
+.buttonContainer{
+	position: relative;
+	width: 20vw;
+	margin: 0px auto;
+	height: 36px;
+}
+
 button{
+	width: 100%;
   font-family: sans-serif;
-  margin: 0px auto;
-  position: relative;
-  border: 0;
+  position: absolute;
+	top: 0;
+	bottom: 0;
+	color: white;
   outline: 0;
   z-index: 100;
-  width: 20vw;
-  min-height: 32px;
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.1);
+	border: 1px solid white;
+	border-bottom: 6px solid white;
+
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.3),
+	0 5px 5px rgba(0, 0, 0, 0.3)
+	;
+	transition: all 0.1s ease;
 }
 button:hover{
   background-color: rgba(255, 255, 255, 0.2);
 }
 button:active{
+	margin-top: 3px;
   background-color: rgba(255, 255, 255, 0.1);
+	border-bottom: 3px solid white;
 }
+
+button:disabled{
+	color: rgba(255,255,255, 0.3);
+	margin-top: 6px;
+	border-bottom: 1px solid white;
+}
+

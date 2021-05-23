@@ -63,14 +63,13 @@ function setup() {
   resetButton = select("#resetButton");
 }
 
-function resetColors() {
-  darkMain = "lavender";
-  // darkMain = color(30, 200, 80);
+function resetColors () {
+	darkMain = color(30, 200, 80);
   lightMain = color(
     255 - hue(darkMain),
     255 - saturation(darkMain),
     brightness(darkMain + 10)
-  );
+	);
 }
 
 function resetInfo() {
@@ -105,12 +104,12 @@ function smallestOf(a, b) {
 }
 
 function draw() {
-  background(lightMain);
+  background(darkMain);
 
   drawGUI();
 
   drawLargeMap(smallestOf(width, height) / zoomLevel);
-  drawMiniMap(7);
+  drawMiniMap(smallestOf(width, height)/50);
 
   push();
   translate(width / 20, s / 3 + 10);
@@ -131,14 +130,14 @@ function drawGUI() {
 function disableButtons() {
   let walls = rooms[playerOne.i].walls;
 
-  setStyle(leftButton, walls.LEFT);
-  setStyle(rightButton, walls.RIGHT);
-  setStyle(upButton, walls.TOP);
-  setStyle(downButton, walls.BOTTOM);
+  disableButton(leftButton, walls.LEFT);
+  disableButton(rightButton, walls.RIGHT);
+  disableButton(upButton, walls.TOP);
+  disableButton(downButton, walls.BOTTOM);
 
-  function setStyle(button, value) {
-    let opacity = value ? 0 : 1;
-    button.style("opacity", opacity);
+  function disableButton(button, value) {
+		value ? button.attribute('disabled', '') : button.removeAttribute('disabled');
+		button.style('background-color', value ? darkMain : lightMain);
   }
   
 }
