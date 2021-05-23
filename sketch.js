@@ -2,6 +2,8 @@ var lightBlue;
 var darkMain;
 
 var rooms = [];
+var spaciousRooms = [];
+var selectedRoom;
 var nRooms = 20;
 
 var s = 40;
@@ -86,17 +88,28 @@ function resetInfo() {
 function resetRooms() {
   let j = -1;
 
-  let startPlayerOne = floor(random(sq(nRooms)));
   for (let i = 0; i < sq(nRooms); i++) {
     j += i % nRooms == 0;
     let a = i;
     a = a % nRooms;
     rooms.push(new Room(createVector(a, j), i));
-    if (i === startPlayerOne) {
-      playerOne = new Player(createVector(a, j), i);
-    }
-  }
-  rooms.forEach((room) => room.neighbourCheck());
+	}
+	
+	rooms.forEach((room) => room.neighbourCheck());
+  rooms.forEach((room) => room.roomScoreCheck());
+
+	spaciousRooms = rooms.filter(room => room.wallCount === 0);
+	spaciousRooms.sort((a, b) => 
+		a.roomScore - b.roomScore
+	);
+
+	console.log({ spaciousRooms });
+
+	selectedRoom = spaciousRooms[0];
+	console.log({selectedRoom});
+
+	playerOne = new Player(selectedRoom.pos, selectedRoom.i);
+	console.log({playerOne});
 }
 
 function smallestOf(a, b) {

@@ -22,9 +22,10 @@ class Room {
       0,
       1,
       -50,
-      50
-    );
-    this.n = color(
+			50
+		);
+		
+    this.noiseColor = color(
       hue(lightMain),
       saturation(lightMain) * 0.8,
       brightness(lightMain) + this.roomNoise
@@ -33,7 +34,7 @@ class Room {
 
   neighbourCheck() {
     if (this.i > nRooms - 1) {
-      this.walls.TOP = rooms[this.i - nRooms].walls.BOTTOM;
+			this.walls.TOP = rooms[this.i - nRooms].walls.BOTTOM;
     }
 
     if (this.i < nRooms * (nRooms - 1)) {
@@ -56,18 +57,43 @@ class Room {
         this.walls.RIGHT +
         this.walls.BOTTOM +
         this.walls.TOP ===
-      4;
+			4;
+		
+		
 
     this.hasItem = this.determineItem();
-  }
+	}
+	
+	roomScoreCheck () {
+		this.roomScore = this.wallCount;
+		
+		this.roomScore += (this.i > nRooms - 1)
+			? rooms[this.i - nRooms].wallCount
+			: 2.5;
+
+		this.roomScore += (this.i < nRooms * (nRooms - 1))
+			? rooms[this.i + nRooms].wallCount
+			: 2.5;
+
+		this.roomScore += (this.pos.x > 0)
+			? rooms[this.i - 1].wallCount
+			: 2.5;
+
+		this.roomScore += (this.pos.x < nRooms - 1)
+			? rooms[this.i + 1].wallCount
+			: 2.5;
+	}
 
   showFloor(s) {
-    // fill(darkMain);
-    // text(this.pos.x + ", " + this.pos.y, this.pos.x * s, this.pos.y * s);
+    this.n = color(
+			hue(this.noiseColor),
+			saturation(this.noiseColor),
+			brightness(this.noiseColor) - map(this.roomScore, 0, 36, 0, 200)
+		)
 
-    this.trace = lerpColor(color(this.trace), this.n, 255 / 1000);
+		this.trace = lerpColor(color(this.trace), this.n, 255 / 1000);
 
-    this.covered ? fill(darkMain) : fill(this.n);
+    fill(this.n);
 
     rect(this.pos.x * s, this.pos.y * s, s);
     this.visited && fill(this.trace);
@@ -83,7 +109,10 @@ class Room {
   }
 
   showWalls(s) {
-    fill(darkMain);
+		fill(color(
+			hue(darkMain),
+			saturation(darkMain),
+			brightness(darkMain) - map(this.roomScore, 0, 36, 0, 100)));
     this.walls.RIGHT && this.drawRightWall(s);
     this.walls.LEFT && this.drawLeftWall(s);
     this.walls.BOTTOM && this.drawBottomWall(s);
