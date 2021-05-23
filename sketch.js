@@ -43,6 +43,8 @@ var downButton;
 
 var resetButton;
 
+var hammer;
+
 function preload() {
   droid = loadFont("assets/DroidSans-Regular.ttf");
   resetInfo();
@@ -62,7 +64,18 @@ function setup() {
   upButton = select("#upButton");
   downButton = select("#downButton");
 
-  resetButton = select("#resetButton");
+	  var options = {
+    preventDefault: true
+		};
+	
+	resetButton = select("#resetButton");
+	hammer = new Hammer(document.body, options);
+	 hammer.get('swipe').set({
+    direction: Hammer.DIRECTION_ALL
+  });
+
+  hammer.on("swipe", swiped);
+
 }
 
 function resetColors () {
@@ -164,6 +177,22 @@ function handleButtonPresses() {
   resetButton.mousePressed(() => resetGame());
 }
 
+function handleSwipes () {
+}
+
+function swiped(event) {
+  console.log(event);
+  if (event.direction == 4) {
+		moveRight();
+  } else if (event.direction == 8) {
+    moveUp();
+  } else if (event.direction == 16) {
+    moveDown();
+  } else if (event.direction == 2) {
+		moveLeft();
+  }
+}
+
 function drawLargeMap(s) {
   push();
   moveTarget = createVector(-playerOne.pos.x * s, -playerOne.pos.y * s);
@@ -220,6 +249,7 @@ function moveLeft() {
   targetCamY = 0;
   playerOne.move("left");
 }
+
 function moveRight() {
   controlStatus["rightStatus"] && delete controlStatus["rightStatus"];
   resetColors();
@@ -227,6 +257,7 @@ function moveRight() {
   targetCamY = 0;
   playerOne.move("right");
 }
+
 function moveUp() {
   controlStatus["upStatus"] && delete controlStatus["upStatus"];
   resetColors();
@@ -234,6 +265,7 @@ function moveUp() {
   targetCamX = 0;
   playerOne.move("up");
 }
+
 function moveDown() {
   resetColors();
   targetCamY = -30;
