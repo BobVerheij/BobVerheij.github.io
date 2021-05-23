@@ -31,7 +31,7 @@ var resetStatus = true;
 
 var controlStatus = null;
 
-var zoomLevel = 9;
+var zoomLevel = 7;
 
 var movePosition;
 var moveTarget;
