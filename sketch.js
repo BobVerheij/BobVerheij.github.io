@@ -50,7 +50,7 @@ function setup () {
   movePosition = createVector(0, 0);
   noStroke();
   colorMode(HSB);
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(window.innerWidth, window.innerHeight);
   rectMode(CENTER);
   resetColors();
   resetRooms();
