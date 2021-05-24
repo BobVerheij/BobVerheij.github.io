@@ -29,7 +29,8 @@ class Room {
       hue(lightMain),
       saturation(lightMain) * 0.8,
       brightness(lightMain) + this.roomNoise
-    );
+		);
+		
   }
 
   neighbourCheck() {
@@ -59,9 +60,7 @@ class Room {
         this.walls.TOP ===
 			4;
 		
-		
-
-    this.hasItem = this.determineItem();
+    this.determineItem();
 	}
 	
 	roomScoreCheck () {
@@ -84,35 +83,45 @@ class Room {
 			: 2.5;
 	}
 
-  showFloor(s) {
+	roomFinalScoreCheck () {
+		this.roomFinalScore = this.roomScore;
+		
+			this.roomFinalScore += (this.i > nRooms - 1)
+			? rooms[this.i - nRooms].roomScore
+			: 12;
+
+		this.roomFinalScore += (this.i < nRooms * (nRooms - 1))
+			? rooms[this.i + nRooms].roomScore
+			: 12;
+
+		this.roomFinalScore += (this.pos.x > 0)
+			? rooms[this.i - 1].roomScore
+			: 12;
+
+		this.roomFinalScore += (this.pos.x < nRooms - 1)
+			? rooms[this.i + 1].roomScore
+			: 12;
+	}
+
+	showFloor (s) {
+		let d = map(this.roomFinalScore, 0, 324, 0, 200) + this.wallCount*10;
     this.n = color(
 			hue(this.noiseColor),
 			saturation(this.noiseColor),
-			brightness(this.noiseColor) - map(this.roomScore, 0, 36, 0, 200)
+			brightness(this.noiseColor) - d
 		)
 
 		this.trace = lerpColor(color(this.trace), this.n, 255 / 1000);
 
-    fill(this.n);
+    fill(this.wallCount === 4 ? darkMain : this.n);
 
     rect(this.pos.x * s, this.pos.y * s, s);
     this.visited && fill(this.trace);
     this.visited && circle(this.pos.x * s, this.pos.y * s, s / 3);
-    fill("limegreen");
-
-    if ((playerOne.i === this.i || this.visited) && this.hasItem) {
-      playerOne.itemList.push("");
-      this.hasItem = false;
-    }
-
-    this.hasItem && this.drawItem(s);
   }
 
   showWalls(s) {
-		fill(color(
-			hue(darkMain),
-			saturation(darkMain),
-			brightness(darkMain) - map(this.roomScore, 0, 36, 0, 100)));
+		fill(darkMain);
     this.walls.RIGHT && this.drawRightWall(s);
     this.walls.LEFT && this.drawLeftWall(s);
     this.walls.BOTTOM && this.drawBottomWall(s);
@@ -128,11 +137,8 @@ class Room {
     this.fieldItem = this.oneWall && floor(this.roomNoise) % 8 === 0;
     this.cornerItem = this.corner && floor(this.roomNoise) % 3 === 0;
 
-    return this.fieldItem + this.cornerItem;
-  }
-
-  drawItem(s) {
-    circle(this.pos.x * s, this.pos.y * s, s / 3);
+		let totalItem =	this.fieldItem + this.cornerItem;
+		totalItem && allItems.push(new Item(this.pos));
   }
 
   drawLeftWall(s) {

@@ -44,13 +44,15 @@ var downButton;
 var resetButton;
 
 var hammer;
+var allItems = [];
 
 function preload() {
   droid = loadFont("assets/DroidSans-Regular.ttf");
-  resetInfo();
+	itemgrab = loadSound("assets/itemgrab.wav");
 }
 
-function setup() {
+function setup () {
+	tempS = (smallestOf(width, height) / zoomLevel);
   movePosition = createVector(0, 0);
   noStroke();
   colorMode(HSB);
@@ -87,18 +89,8 @@ function resetColors () {
 	);
 }
 
-function resetInfo() {
-  controlStatus = {
-    leftStatus: { TEXT: "LEFT = LEFT ARROW KEY", POS: createVector(0, 0) },
-    rightStatus: { TEXT: "RIGHT = RIGHT ARROW KEY", POS: createVector(0, 0) },
-    upStatus: { TEXT: "UP = UP ARROW KEY", POS: createVector(0, 0) },
-    downStatus: { TEXT: "DOWN = DOWN ARROW KEY", POS: createVector(0, 0) },
-    resetStatus: { TEXT: "RESET = R", POS: createVector(0, 0) },
-    infoStatus: { TEXT: "INFO = I", POS: createVector(0, 0) },
-  };
-}
-
-function resetRooms() {
+function resetRooms () {
+	allItems = [];
   let j = -1;
 
   for (let i = 0; i < sq(nRooms); i++) {
@@ -109,20 +101,15 @@ function resetRooms() {
 	}
 	
 	rooms.forEach((room) => room.neighbourCheck());
-  rooms.forEach((room) => room.roomScoreCheck());
+	rooms.forEach((room) => room.roomScoreCheck());
+	rooms.forEach((room) => room.roomFinalScoreCheck());
 
 	spaciousRooms = rooms.filter(room => room.wallCount === 0);
 	spaciousRooms.sort((a, b) => 
-		a.roomScore - b.roomScore
+		a.roomFinalScore - b.roomFinalScore
 	);
-
-	console.log({ spaciousRooms });
-
 	selectedRoom = spaciousRooms[0];
-	console.log({selectedRoom});
-
 	playerOne = new Player(selectedRoom.pos, selectedRoom.i);
-	console.log({playerOne});
 }
 
 function smallestOf(a, b) {
@@ -139,13 +126,10 @@ function draw() {
 
   push();
   translate(width / 20, s / 3 + 10);
-  // drawControls();
-  drawItems(width / 20);
+
+	drawItems(width / 20);
   pop();
 
-  // drawGuides();
-  noStroke();
-  noFill();
 }
 
 function drawGUI() {
@@ -168,12 +152,11 @@ function disableButtons() {
   
 }
 
-function handleButtonPresses() {
+function handleButtonPresses () {
   leftButton.mousePressed(() => moveLeft());
   rightButton.mousePressed(() => moveRight());
   upButton.mousePressed(() => moveUp());
   downButton.mousePressed(() => moveDown());
-
   resetButton.mousePressed(() => resetGame());
 }
 
@@ -194,15 +177,15 @@ function swiped(event) {
 }
 
 function drawLargeMap(s) {
-  push();
+	push();
   moveTarget = createVector(-playerOne.pos.x * s, -playerOne.pos.y * s);
-  movePosition = p5.Vector.lerp(movePosition, moveTarget, 0.1);
+	movePosition = p5.Vector.lerp(movePosition, moveTarget, 0.1);
   translate(movePosition.x, movePosition.y);
   translate(width / 2, height / 2);
   rooms.forEach((room) => room.showFloor(s));
-  rooms.forEach((room) => room.showWalls(s));
-  playerOne.show(s);
-  playerOne.show(s);
+	rooms.forEach((room) => room.showWalls(s));
+	allItems.forEach((item) => item.showItem(s));
+  playerOne.show(s);	
   pop();
 }
 
@@ -233,7 +216,7 @@ function drawGuides() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight, WEBGL);
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function keyTyped() {
@@ -282,7 +265,10 @@ function resetGame() {
   targetCamY = 0;
 }
 
-function keyPressed() {
+function keyPressed () {
+	
+	console.log(smallestOf(width, height) / zoomLevel);
+	console.log(width / zoomLevel);
   keyCode === LEFT_ARROW && moveLeft();
   keyCode === RIGHT_ARROW && moveRight();
   keyCode === UP_ARROW && moveUp();
