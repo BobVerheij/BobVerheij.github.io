@@ -23,12 +23,6 @@ var targetCamY = 0;
 
 var droid;
 
-var leftStatus = true;
-var rightStatus = true;
-var upStatus = true;
-var downStatus = true;
-var resetStatus = true;
-
 var controlStatus = null;
 
 var zoomLevel = 7;
@@ -126,8 +120,8 @@ function draw() {
 
   push();
   translate(width / 20, s / 3 + 10);
-
-	drawItems(width / 20);
+  // drawControls();
+  drawItems(width / 20);
   pop();
 
 }
@@ -226,7 +220,6 @@ function keyTyped() {
 }
 
 function moveLeft() {
-  controlStatus["leftStatus"] && delete controlStatus["leftStatus"];
   resetColors();
   targetCamX = 30;
   targetCamY = 0;
@@ -234,7 +227,6 @@ function moveLeft() {
 }
 
 function moveRight() {
-  controlStatus["rightStatus"] && delete controlStatus["rightStatus"];
   resetColors();
   targetCamX = -30;
   targetCamY = 0;
@@ -242,7 +234,6 @@ function moveRight() {
 }
 
 function moveUp() {
-  controlStatus["upStatus"] && delete controlStatus["upStatus"];
   resetColors();
   targetCamY = 30;
   targetCamX = 0;
@@ -257,7 +248,6 @@ function moveDown() {
 }
 
 function resetGame() {
-  controlStatus["resetStatus"] && delete controlStatus["resetStatus"];
   rooms = [];
   playerOne = null;
   resetRooms();
