@@ -1,47 +1,49 @@
-<!DOCTYPE html><html lang="en"><head>
-    <script src="p5.js"></script>
-    <script src="p5.sound.min.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, 
-     user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta
+      charset="utf-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, 
+     user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
   </head>
   <body>
     <script>
-      document.addEventListener('gesturestart', function (e) {
+      document.addEventListener("gesturestart", function (e) {
         e.preventDefault();
       });
     </script>
+    <script src="p5.js"></script>
     <script src="sketch.js"></script>
     <script src="room.js"></script>
     <script src="player.js"></script>
-		<script src="item.js"></script>
-		<script src="hammer.min.js"></script>
+    <script src="item.js"></script>
+    <script src="wall.js"></script>
+    <script src="hammer.min.js"></script>
+    <script src="p5.sound.min.js"></script>
 
-
-    
-    <button id="resetButton" style="width: 20vw; height:36px"> RESET </button>
+    <button id="resetButton" style="width: 20vw; height: 36px">RESET</button>
 
     <div id="hud">
-			<div class="buttonContainer" style="width: 20vw;">
-      <button id="upButton">UP</button>
-			</div>
+      <div class="buttonContainer" style="width: 20vw">
+        <button id="upButton">UP</button>
+      </div>
       <div>
-				 <div class="buttonContainer">
-        <button id="leftButton">LEFT</button>
-				</div>
-				
-				<div class="buttonContainer">
-        <button id="downButton">DOWN</button>
-				</div>
-				
-				<div class="buttonContainer">
-        <button id="rightButton">RIGHT</button>
-				</div>
+        <div class="buttonContainer">
+          <button id="leftButton">LEFT</button>
+        </div>
 
+        <div class="buttonContainer">
+          <button id="downButton">DOWN</button>
+        </div>
+
+        <div class="buttonContainer">
+          <button id="rightButton">RIGHT</button>
+        </div>
       </div>
     </div>
-  
-
-</body></html>
+  </body>
+</html>

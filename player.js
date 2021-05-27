@@ -9,7 +9,7 @@ class Player {
 
   show(size) {
     this.trail.push(this.pos);
-    this.pos = p5.Vector.lerp(this.pos, this.tar, 0.05);
+    this.pos = p5.Vector.lerp(this.pos, this.tar, 0.1);
     this.checkReady();
     fill("blanchedalmond");
     noStroke();

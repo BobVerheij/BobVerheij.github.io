@@ -6,12 +6,13 @@ var spaciousRooms = [];
 var selectedRoom;
 var nRooms = 20;
 
-var s = 40;
 var wallThickness;
 
 var playerOne;
 
 var dWall = 0;
+
+var s = 40;
 
 var start = true;
 
@@ -39,20 +40,32 @@ var resetButton;
 
 var hammer;
 var allItems = [];
+var testWall;
+
+var floorPlan;
+var wallPlan;
 
 function preload() {
   droid = loadFont("assets/DroidSans-Regular.ttf");
-	itemgrab = loadSound("assets/itemgrab.wav");
+  itemgrab = loadSound("assets/itemgrab.wav");
 }
 
-function setup () {
-	tempS = (smallestOf(width, height) / zoomLevel);
+function setup() {
+  tempS = smallestOf(width, height) / zoomLevel;
   movePosition = createVector(0, 0);
   noStroke();
   colorMode(HSB);
   createCanvas(window.innerWidth, window.innerHeight);
   rectMode(CENTER);
   resetColors();
+  let graphicWidth = nRooms * (smallestOf(width, height) / zoomLevel);
+  floorPlan = createGraphics(graphicWidth, graphicWidth);
+  wallPlan = createGraphics(graphicWidth, graphicWidth);
+  floorPlan.rectMode(CENTER);
+  wallPlan.rectMode(CENTER);
+  floorPlan.noStroke();
+  wallPlan.noStroke();
+
   resetRooms();
 
   leftButton = select("#leftButton");
@@ -60,31 +73,31 @@ function setup () {
   upButton = select("#upButton");
   downButton = select("#downButton");
 
-	  var options = {
-    preventDefault: true
-		};
-	
-	resetButton = select("#resetButton");
-	hammer = new Hammer(document.body, options);
-	 hammer.get('swipe').set({
-    direction: Hammer.DIRECTION_ALL
+  var options = {
+    preventDefault: true,
+  };
+
+  resetButton = select("#resetButton");
+  hammer = new Hammer(document.body, options);
+  hammer.get("swipe").set({
+    direction: Hammer.DIRECTION_ALL,
   });
 
   hammer.on("swipe", swiped);
-
+  testWall = new Wall(createVector(100, 100), 1000);
 }
 
-function resetColors () {
-	darkMain = color(30, 200, 80);
+function resetColors() {
+  darkMain = color(30, 200, 80);
   lightMain = color(
     255 - hue(darkMain),
     255 - saturation(darkMain),
     brightness(darkMain + 10)
-	);
+  );
 }
 
-function resetRooms () {
-	allItems = [];
+function resetRooms() {
+  allItems = [];
   let j = -1;
 
   for (let i = 0; i < sq(nRooms); i++) {
@@ -92,18 +105,23 @@ function resetRooms () {
     let a = i;
     a = a % nRooms;
     rooms.push(new Room(createVector(a, j), i));
-	}
-	
-	rooms.forEach((room) => room.neighbourCheck());
-	rooms.forEach((room) => room.roomScoreCheck());
-	rooms.forEach((room) => room.roomFinalScoreCheck());
+  }
 
-	spaciousRooms = rooms.filter(room => room.wallCount === 0);
-	spaciousRooms.sort((a, b) => 
-		a.roomFinalScore - b.roomFinalScore
-	);
-	selectedRoom = spaciousRooms[0];
-	playerOne = new Player(selectedRoom.pos, selectedRoom.i);
+  rooms.forEach((room) => room.neighbourCheck());
+  rooms.forEach((room) => room.roomScoreCheck());
+  rooms.forEach((room) => room.roomFinalScoreCheck());
+
+  spaciousRooms = rooms.filter((room) => room.wallCount === 0);
+  spaciousRooms.sort((a, b) => a.roomFinalScore - b.roomFinalScore);
+  selectedRoom = spaciousRooms[0];
+  playerOne = new Player(selectedRoom.pos, selectedRoom.i);
+
+  rooms.forEach((room) =>
+    room.showFloor(smallestOf(width, height) / zoomLevel)
+  );
+  rooms.forEach((room) =>
+    room.showWalls(smallestOf(width, height) / zoomLevel)
+  );
 }
 
 function smallestOf(a, b) {
@@ -113,10 +131,16 @@ function smallestOf(a, b) {
 function draw() {
   background(darkMain);
 
+  push();
+  translate(movePosition.x, movePosition.y);
+  translate(width / 2, height / 2);
+  image(floorPlan, 0, 0);
+  image(wallPlan, 0, 0);
+  pop();
   drawGUI();
 
   drawLargeMap(smallestOf(width, height) / zoomLevel);
-  drawMiniMap(smallestOf(width, height)/50);
+  // drawMiniMap(smallestOf(width, height)/50);
 
   push();
   translate(width / 20, s / 3 + 10);
@@ -124,6 +148,7 @@ function draw() {
   drawItems(width / 20);
   pop();
 
+  // testWall.show();
 }
 
 function drawGUI() {
@@ -140,13 +165,14 @@ function disableButtons() {
   disableButton(downButton, walls.BOTTOM);
 
   function disableButton(button, value) {
-		value ? button.attribute('disabled', '') : button.removeAttribute('disabled');
-		button.style('background-color', value ? darkMain : lightMain);
+    value
+      ? button.attribute("disabled", "")
+      : button.removeAttribute("disabled");
+    button.style("background-color", value ? darkMain : lightMain);
   }
-  
 }
 
-function handleButtonPresses () {
+function handleButtonPresses() {
   leftButton.mousePressed(() => moveLeft());
   rightButton.mousePressed(() => moveRight());
   upButton.mousePressed(() => moveUp());
@@ -154,32 +180,28 @@ function handleButtonPresses () {
   resetButton.mousePressed(() => resetGame());
 }
 
-function handleSwipes () {
-}
+function handleSwipes() {}
 
 function swiped(event) {
-  console.log(event);
   if (event.direction == 4) {
-		moveRight();
+    moveRight();
   } else if (event.direction == 8) {
     moveUp();
   } else if (event.direction == 16) {
     moveDown();
   } else if (event.direction == 2) {
-		moveLeft();
+    moveLeft();
   }
 }
 
 function drawLargeMap(s) {
-	push();
+  push();
   moveTarget = createVector(-playerOne.pos.x * s, -playerOne.pos.y * s);
-	movePosition = p5.Vector.lerp(movePosition, moveTarget, 0.1);
+  movePosition = p5.Vector.lerp(movePosition, moveTarget, 0.1);
   translate(movePosition.x, movePosition.y);
   translate(width / 2, height / 2);
-  rooms.forEach((room) => room.showFloor(s));
-	rooms.forEach((room) => room.showWalls(s));
-	allItems.forEach((item) => item.showItem(s));
-  playerOne.show(s);	
+  allItems.forEach((item) => item.showItem(s));
+  playerOne.show(s);
   pop();
 }
 
@@ -255,10 +277,7 @@ function resetGame() {
   targetCamY = 0;
 }
 
-function keyPressed () {
-	
-	console.log(smallestOf(width, height) / zoomLevel);
-	console.log(width / zoomLevel);
+function keyPressed() {
   keyCode === LEFT_ARROW && moveLeft();
   keyCode === RIGHT_ARROW && moveRight();
   keyCode === UP_ARROW && moveUp();

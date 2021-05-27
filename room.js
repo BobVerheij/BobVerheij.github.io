@@ -22,20 +22,19 @@ class Room {
       0,
       1,
       -50,
-			50
-		);
-		
+      50
+    );
+
     this.noiseColor = color(
       hue(lightMain),
       saturation(lightMain) * 0.8,
       brightness(lightMain) + this.roomNoise
-		);
-		
+    );
   }
 
   neighbourCheck() {
     if (this.i > nRooms - 1) {
-			this.walls.TOP = rooms[this.i - nRooms].walls.BOTTOM;
+      this.walls.TOP = rooms[this.i - nRooms].walls.BOTTOM;
     }
 
     if (this.i < nRooms * (nRooms - 1)) {
@@ -58,70 +57,60 @@ class Room {
         this.walls.RIGHT +
         this.walls.BOTTOM +
         this.walls.TOP ===
-			4;
-		
+      4;
+
     this.determineItem();
-	}
-	
-	roomScoreCheck () {
-		this.roomScore = this.wallCount;
-		
-		this.roomScore += (this.i > nRooms - 1)
-			? rooms[this.i - nRooms].wallCount
-			: 2.5;
+  }
 
-		this.roomScore += (this.i < nRooms * (nRooms - 1))
-			? rooms[this.i + nRooms].wallCount
-			: 2.5;
+  roomScoreCheck() {
+    this.roomScore = this.wallCount;
 
-		this.roomScore += (this.pos.x > 0)
-			? rooms[this.i - 1].wallCount
-			: 2.5;
+    this.roomScore +=
+      this.i > nRooms - 1 ? rooms[this.i - nRooms].wallCount : 2.5;
 
-		this.roomScore += (this.pos.x < nRooms - 1)
-			? rooms[this.i + 1].wallCount
-			: 2.5;
-	}
+    this.roomScore +=
+      this.i < nRooms * (nRooms - 1) ? rooms[this.i + nRooms].wallCount : 2.5;
 
-	roomFinalScoreCheck () {
-		this.roomFinalScore = this.roomScore;
-		
-			this.roomFinalScore += (this.i > nRooms - 1)
-			? rooms[this.i - nRooms].roomScore
-			: 12;
+    this.roomScore += this.pos.x > 0 ? rooms[this.i - 1].wallCount : 2.5;
 
-		this.roomFinalScore += (this.i < nRooms * (nRooms - 1))
-			? rooms[this.i + nRooms].roomScore
-			: 12;
+    this.roomScore +=
+      this.pos.x < nRooms - 1 ? rooms[this.i + 1].wallCount : 2.5;
+  }
 
-		this.roomFinalScore += (this.pos.x > 0)
-			? rooms[this.i - 1].roomScore
-			: 12;
+  roomFinalScoreCheck() {
+    this.roomFinalScore = this.roomScore;
 
-		this.roomFinalScore += (this.pos.x < nRooms - 1)
-			? rooms[this.i + 1].roomScore
-			: 12;
-	}
+    this.roomFinalScore +=
+      this.i > nRooms - 1 ? rooms[this.i - nRooms].roomScore : 12;
 
-	showFloor (s) {
-		let d = map(this.roomFinalScore, 0, 324, 0, 200) + this.wallCount*10;
+    this.roomFinalScore +=
+      this.i < nRooms * (nRooms - 1) ? rooms[this.i + nRooms].roomScore : 12;
+
+    this.roomFinalScore += this.pos.x > 0 ? rooms[this.i - 1].roomScore : 12;
+
+    this.roomFinalScore +=
+      this.pos.x < nRooms - 1 ? rooms[this.i + 1].roomScore : 12;
+  }
+
+  showFloor(s) {
+    let d = map(this.roomFinalScore, 0, 324, 0, 200) + this.wallCount * 10;
     this.n = color(
-			hue(this.noiseColor),
-			saturation(this.noiseColor),
-			brightness(this.noiseColor) - d
-		)
+      hue(this.noiseColor),
+      saturation(this.noiseColor),
+      brightness(this.noiseColor) - d
+    );
 
-		this.trace = lerpColor(color(this.trace), this.n, 255 / 1000);
+    this.trace = lerpColor(color(this.trace), this.n, 255 / 1000);
 
-    fill(this.wallCount === 4 ? darkMain : this.n);
+    floorPlan.fill(this.wallCount === 4 ? darkMain : this.n);
 
-    rect(this.pos.x * s, this.pos.y * s, s);
-    this.visited && fill(this.trace);
-    this.visited && circle(this.pos.x * s, this.pos.y * s, s / 3);
+    floorPlan.rect(this.pos.x * s, this.pos.y * s, s);
+    this.visited && floorPlan.fill(this.trace);
+    this.visited && floorPlan.circle(this.pos.x * s, this.pos.y * s, s / 3);
   }
 
   showWalls(s) {
-		fill(darkMain);
+    wallPlan.fill(darkMain);
     this.walls.RIGHT && this.drawRightWall(s);
     this.walls.LEFT && this.drawLeftWall(s);
     this.walls.BOTTOM && this.drawBottomWall(s);
@@ -137,16 +126,22 @@ class Room {
     this.fieldItem = this.oneWall && floor(this.roomNoise) % 8 === 0;
     this.cornerItem = this.corner && floor(this.roomNoise) % 3 === 0;
 
-		let totalItem =	this.fieldItem + this.cornerItem;
-		totalItem && allItems.push(new Item(this.pos));
+    let totalItem = this.fieldItem + this.cornerItem;
+    totalItem && allItems.push(new Item(this.pos));
   }
 
   drawLeftWall(s) {
-    rect(this.pos.x * s - s / 2, this.pos.y * s, s / 8, s + s / 8, 1000);
+    wallPlan.rect(
+      this.pos.x * s - s / 2,
+      this.pos.y * s,
+      s / 8,
+      s + s / 8,
+      1000
+    );
   }
 
   drawRightWall(s) {
-    rect(
+    wallPlan.rect(
       this.pos.x * s + s / 2,
       this.pos.y * s,
       s / 8,
@@ -156,7 +151,7 @@ class Room {
   }
 
   drawTopWall(s) {
-    rect(
+    wallPlan.rect(
       this.pos.x * s,
       this.pos.y * s - s / 2,
       s + s / 8,
@@ -166,7 +161,7 @@ class Room {
   }
 
   drawBottomWall(s) {
-    rect(
+    wallPlan.rect(
       this.pos.x * s,
       this.pos.y * s + s / 2,
       s + s / 8,
